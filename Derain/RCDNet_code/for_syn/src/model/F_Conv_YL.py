@@ -29,27 +29,6 @@ class MyConv(MyModule):
         self.p = p
         self.rot_eq_loss = 0
 
-        # Basis, Rank, weight = self.GetBasis_PCA(sizeP=kernel_size, tranNum=self.tranNum, inP=kernel_size, Smooth=True)
-        # iniw = self.Getini_reg(Basis.size(3), inNum=in_channels, outNum=out_channels, expand=self.expand, weight=weight) * 0.4 # iniScale
-        # self.Basis = Basis.cuda()
-        # self.weights = nn.Parameter(iniw, requires_grad=True).cuda()
-
-        # tempW = torch.einsum('ijok,mnak->monaij', self.Basis, self.weights)
-        # Num = self.tranNum // self.expand
-        # tempWList = [torch.cat([tempW[:, i * Num:(i + 1) * Num, :, -i:, :, :], tempW[:, i * Num:(i + 1) * Num, :, :-i, :, :]],dim=3) for i in range(self.expand)]
-        # tempW = torch.cat(tempWList, dim=1)
-
-        # # print(tempW.size())  # :[64, 4, 64, 4, 3, 3]
-        # _filter = tempW.reshape([out_channels*tran_num, in_channels*self.expand, self.sizeP, self.sizeP])
-        # # print(_filter.size())  # [256, 256, 3, 3]
-        # _bias = nn.Parameter(torch.zeros(out_channels*tran_num),requires_grad=True)
-
-        # self.conv.weight.data = _filter
-        # self.conv.bias.data = _bias
-
-        # if not os.path.exists(self.save_dir):
-        #     os.makedirs(self.save_dir)
-
 
     def forward(self, x):
 
@@ -85,7 +64,7 @@ class MyConv(MyModule):
                               [torch.sin(angle_rad), torch.cos(angle_rad), 0]])
         theta = theta.float()
 
-        # 应用仿射变换
+        
         grid = F.affine_grid(theta.unsqueeze(0).expand(images_clone.size(0), -1, -1), images_clone.size(),
                                        align_corners=True).to(images.device)
         rotated_images = F.grid_sample(images_clone, grid, align_corners=True)
