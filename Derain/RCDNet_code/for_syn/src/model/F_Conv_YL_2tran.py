@@ -31,31 +31,7 @@ class MyConv(MyModule):
         self.layer_num = 0
     
 
-        # Basis, Rank, weight = self.GetBasis_PCA(sizeP=kernel_size, tranNum=self.tranNum, inP=kernel_size, Smooth=True)
-        # iniw = self.Getini_reg(Basis.size(3), inNum=in_channels, outNum=out_channels, expand=self.expand, weight=weight) * 0.4 # iniScale
-        # self.Basis = Basis.cuda()
-        # self.weights = nn.Parameter(iniw, requires_grad=True).cuda()
-
-        # tempW = torch.einsum('ijok,mnak->monaij', self.Basis, self.weights)
-        # Num = self.tranNum // self.expand
-        # tempWList = [torch.cat([tempW[:, i * Num:(i + 1) * Num, :, -i:, :, :], tempW[:, i * Num:(i + 1) * Num, :, :-i, :, :]],dim=3) for i in range(self.expand)]
-        # tempW = torch.cat(tempWList, dim=1)
-
-        # # print(tempW.size())  # :[64, 4, 64, 4, 3, 3]
-        # _filter = tempW.reshape([out_channels*tran_num, in_channels*self.expand, self.sizeP, self.sizeP])
-        # # print(_filter.size())  # [256, 256, 3, 3]
-        # _bias = nn.Parameter(torch.zeros(out_channels*tran_num),requires_grad=True)
-
-        # self.conv.weight.data = _filter
-        # self.conv.bias.data = _bias
-
-        # if not os.path.exists(self.save_dir):
-        #     os.makedirs(self.save_dir)
-
-
     def forward(self, x):
-
-
         if self.training:
             # self.rot_eq_loss = 0 计算好的损失可以存在这里，后面可以用main里的函数读取
             # print("train ing num:", self.rot_num)
@@ -66,28 +42,9 @@ class MyConv(MyModule):
             self.rot_eq_loss = torch.norm(self.rot(z[0, :, :, :, :]) - self.shift(z[1, :, :, :, :]), p=self.p)
             #self.rot_eq_loss = torch.norm(y[0, :, :, :, :]- self.rot( - self.shift(y[1, :, :, :, :]), -self.rot_num), p=self.p)
 
-
         else:
-
-            # self.layer_num += 1  # 在每次调用时更新层次信息
-
             y = self.conv(x)
-            # B, C, H, W = y.size()
-            # z = y.reshape([B, C // self.tran_num, self.tran_num, H, W])
-            # mean_z = z.mean(dim=2)
-            #
-            # feature_map = mean_z[0, :3, :, :].detach().cpu().numpy().transpose(1, 2, 0)  # 调整通道维度的顺序
-            # # feature_map = mean_z[0, 0, :, :].detach().cpu().numpy()
-            # feature_map = (feature_map - feature_map.min()) / (feature_map.max() - feature_map.min())  # 将数据范围归一化到 [0, 1]
-            # feature_map = (feature_map * 255).astype(np.uint8)
-            # plt.imshow(feature_map,cmap='viridis')
-            # plt.axis('off')
-            # timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")[:-3]  # 生成时间戳（不包含最后的3位微秒）
-            # # timestamp = int(time.time())
-            # save_path = os.path.join(self.save_dir, f'layer_{self.layer_num}_{timestamp}_feature_map.png')  # 设置保存路径
-            # plt.savefig(save_path)  # 保存特征图为图片
-
-
+            
         return y
 
     def shift(self,x):
@@ -106,13 +63,13 @@ class MyConv(MyModule):
         angle = self.rot_num * step
         angle_rad = torch.deg2rad(torch.tensor(angle))
 
-        # center = torch.tensor(images.shape[2:]) // 2  # 图像中心点
+        # center = torch.tensor(images.shape[2:]) // 2 
 
         theta = torch.tensor([[torch.cos(angle_rad), -torch.sin(angle_rad), 0],
                               [torch.sin(angle_rad), torch.cos(angle_rad), 0]])
         theta = theta.float()
 
-        # 应用仿射变换
+    
         grid = F.affine_grid(theta.unsqueeze(0).expand(images_clone.size(0), -1, -1), images_clone.size(),
                                        align_corners=True).to(images.device)
         rotated_images = F.grid_sample(images_clone, grid, align_corners=True)
