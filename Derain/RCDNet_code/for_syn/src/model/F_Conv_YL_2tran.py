@@ -33,14 +33,11 @@ class MyConv(MyModule):
 
     def forward(self, x):
         if self.training:
-            # self.rot_eq_loss = 0 计算好的损失可以存在这里，后面可以用main里的函数读取
-            # print("train ing num:", self.rot_num)
             y = self.conv(x)
             B, C, H, W = y.size() # 32 256 48 48
             z = y.reshape([2, B//2, C, H, W])
             # self.rot_eq_loss = torch.norm(self.rot(z[0, :, :, :, :]) - self.shift(z[1, :, :, :, :]), p = self.p)
-            self.rot_eq_loss = torch.norm(self.rot(z[0, :, :, :, :]) - self.shift(z[1, :, :, :, :]), p=self.p)
-            #self.rot_eq_loss = torch.norm(y[0, :, :, :, :]- self.rot( - self.shift(y[1, :, :, :, :]), -self.rot_num), p=self.p)
+            self.rot_eq_loss = torch.norm(self.rot(z[0, :, :, :, :]) - self.shift(z[1, :, :, :, :]), p=self.p) 
 
         else:
             y = self.conv(x)
@@ -64,12 +61,9 @@ class MyConv(MyModule):
         angle_rad = torch.deg2rad(torch.tensor(angle))
 
         # center = torch.tensor(images.shape[2:]) // 2 
-
         theta = torch.tensor([[torch.cos(angle_rad), -torch.sin(angle_rad), 0],
                               [torch.sin(angle_rad), torch.cos(angle_rad), 0]])
         theta = theta.float()
-
-    
         grid = F.affine_grid(theta.unsqueeze(0).expand(images_clone.size(0), -1, -1), images_clone.size(),
                                        align_corners=True).to(images.device)
         rotated_images = F.grid_sample(images_clone, grid, align_corners=True)
