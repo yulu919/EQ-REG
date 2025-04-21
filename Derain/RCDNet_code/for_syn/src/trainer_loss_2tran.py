@@ -229,7 +229,6 @@ class Trainer():
 
         theta = theta.float()
 
-        # 应用仿射变换
         grid = F.affine_grid(theta.unsqueeze(0).expand(images_clone.size(0), -1, -1), images_clone.size(), align_corners=True).to(images.device)
         rotated_images = F.grid_sample(images_clone, grid, align_corners=True)
 
