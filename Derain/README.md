@@ -19,9 +19,9 @@ Please refer to the original coding framework [RCDNet](https://github.com/hongwa
 Running examples are also provided in the [run.sh](./RCDNet_code/for_syn/src/run.sh) file.
 
 ### Use EQ-REG
-The calculation of EQ-REG is in the [F_Conv_YL.py](F_Conv_YL.py) file.
+The calculation of EQ-REG is in the [F_Conv_YL.py](./RCDNet_code/for_syn/src/model/F_Conv_YL.py) file.
 
-For the modification of the model, please compare [rcdnet_loss_xnet.py](rcdnet_loss_xnet.py) and [rcdnet.py](rcdnet.py).
+For the modification of the model, please compare [rcdnet_loss_xnet.py](./RCDNet_code/for_syn/src/model/rcdnet_loss_xnet.py) and [rcdnet.py](./RCDNet_code/for_syn/src/model/rcdnet.py).
 
-For the modification of the training code, please compare [main_loss.py](main_loss.py), [trainer_loss.py](trainer_loss.py) and [main.py](main.py), [trainer.py](trainer.py).
+For the modification of the training code, please compare [main_loss.py](./RCDNet_code/for_syn/src/main_loss.py), [trainer_loss.py](./RCDNet_code/for_syn/src/trainer_loss.py) and [main.py](./RCDNet_code/for_syn/src/main.py), [trainer.py](./RCDNet_code/for_syn/src/trainer.py).
 
