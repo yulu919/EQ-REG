@@ -16,7 +16,7 @@ conda activate rcdtorch
 ### Dataset & Training & Testing
 Please refer to the original coding framework [RCDNet](https://github.com/hongwang01/RCDNet) to execute the training and testing process.
 
-Running examples are also provided in the [run.sh](run.sh) file.
+Running examples are also provided in the [run.sh](./RCDNet_code/for_syn/src/run.sh) file.
 
 ### Use EQ-REG
 The calculation of EQ-REG is in the [F_Conv_YL.py](F_Conv_YL.py) file.
